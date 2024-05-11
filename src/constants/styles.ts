@@ -1,4 +1,5 @@
-import { ViewStyle } from "react-native";
+import { TextStyle, ViewStyle } from "react-native";
+import { wp } from "../helpers/dimens";
 
 export const colors = {
   primary: "#007AFF",
@@ -6,7 +7,7 @@ export const colors = {
   white: "#fff",
   dark_1: "#2B394E",
   app_color: "#FF6C78",
-  gray_1: '#80808087',
+  gray_1: "#80808087",
   neutral: (opacity: number) => `rgba(10, 10, 10, ${opacity})`,
 };
 
@@ -26,7 +27,7 @@ export const fontSize = {
   md: 16,
   lg: 18,
   xl: 20,
-}
+};
 
 export const globalStyles = {
   container: {
@@ -50,5 +51,16 @@ export const globalStyles = {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+  } as ViewStyle,
+  title: {
+    color: colors.dark_1,
+    fontSize: fontSize.xl,
+    fontWeight: "bold",
+  } as TextStyle,
+  iconWrapper: {
+    width: 40,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
   } as ViewStyle,
 };

@@ -3,4 +3,6 @@ export type AuthNavigatorParams = {
 };
 export type MainNavigatorParams = {
   Home: undefined;
+  Booking: undefined;
+  History: undefined;
 };

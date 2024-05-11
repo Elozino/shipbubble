@@ -41,7 +41,7 @@ export default Input
 
 const styles = StyleSheet.create({
   wrapper: {
-    width: wp(80)
+    width: wp(80),
   },
   text: {
     color: colors.app_color,
