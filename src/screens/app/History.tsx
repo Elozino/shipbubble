@@ -1,17 +1,39 @@
-import { FlatList, Image, StyleSheet, Text, View } from 'react-native'
+import { FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import { colors, fontSize, globalStyles } from '../../constants/styles'
+import { colors, fontSize, globalStyles, radius } from '../../constants/styles';
 import NavHeader from '../../components/NavHeader'
-import { wp } from '../../helpers/dimens'
+import { hp, wp } from '../../helpers/dimens'
 import Card from '../../components/ui/Card'
 import { images } from '../../constants/images'
 import { FontAwesome } from '@expo/vector-icons'
+import { Octicons } from '@expo/vector-icons';
+import { tabList } from '../../constants/data'
+
+
 
 const History = () => {
   return (
     <View style={[globalStyles.container]}>
-      <NavHeader headerName="Delivery History" />
+      <NavHeader headerName="Delivery History"
+        icon={
+          <Pressable style={[globalStyles.iconWrapper, globalStyles.allCenter, { marginRight: 10 }]}>
+            <Octicons name="search" size={24} color="black"
+            />
+          </Pressable>
+        }
+      />
       <View style={{ padding: wp(3) }}>
+        <View style={[globalStyles.flexRowBtw, styles.tabWrapper]}>
+          {
+            tabList.map(item => (
+              <Pressable
+                key={item}
+                style={[globalStyles.allCenter, styles.tabBtn]}>
+                <Text style={styles.tabText}>{item}</Text>
+              </Pressable>
+            ))
+          }
+        </View>
         <FlatList
           data={Array(50)}
           keyExtractor={item => item}
@@ -54,5 +76,13 @@ const styles = StyleSheet.create({
     borderRadius: wp(6)
   },
   mainText: { fontWeight: '600' },
-  subText: { fontSize: fontSize.xs, color: colors.dark_1 }
+  subText: { fontSize: fontSize.xs, color: colors.dark_1 },
+  tabBtn: {
+    width: '33%',
+    backgroundColor: colors.app_color,
+    height: 40,
+    borderRadius: radius.curve,
+  },
+  tabWrapper: { borderWidth: 1, borderColor: colors.app_color, borderRadius: radius.curve, padding: 5, marginBottom: hp(1) },
+  tabText: { color: colors.white, fontSize: fontSize.sm, fontWeight: '500', letterSpacing: 1 }
 })
