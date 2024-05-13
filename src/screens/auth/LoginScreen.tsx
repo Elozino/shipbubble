@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, Image, Keyboard, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import AppButton from '../../components/ui/AppButton'
 import Input from '../../components/ui/Input'
 import { images } from '../../constants/images'
@@ -21,6 +21,7 @@ const LoginScreen = () => {
   const [isLoading, setIsLoading] = useState(false)
 
   const handleSubmit = () => {
+    Keyboard.dismiss()
     if (!loginForm.username || !loginForm.password) {
       setError(prev => ({ ...prev, username: !loginForm.username }))
       setError(prev => ({ ...prev, password: !loginForm.password }))
