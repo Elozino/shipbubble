@@ -4,6 +4,7 @@
 
 1. Clone the repo
 ```
+git clone https://github.com/Elozino/shipbubble.git
 ```
 2. Change directory to app directory
 ```
