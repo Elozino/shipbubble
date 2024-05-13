@@ -1,25 +1,37 @@
 import { Octicons } from '@expo/vector-icons';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import HistoryCard from '../../components/HistoryCard';
 import NavHeader from '../../components/NavHeader';
 import { orders, tabList } from '../../constants/data';
 import { colors, fontSize, globalStyles, radius } from '../../constants/styles';
 import { hp, wp } from '../../helpers/dimens';
-import { HistoryCardProps, orderProps } from '../../types';
+import { HistoryCardProps, orderProps, orderStatus } from '../../types';
 
 
 const History = () => {
   const [activeTab, setActiveTab] = useState('All')
+  const [ordersList, setOrdersList] = useState(orders)
+
+  const handleFilter = useCallback((status: orderStatus) => {
+    if (status.toLowerCase() === 'All'.toLowerCase()) {
+      setOrdersList(orders);
+    } else {
+      const filters = orders.filter(
+        (item) => item?.status === status.toString().toLowerCase()
+      );
+      setOrdersList(filters);
+    }
+  }, []);
   return (
     <View style={[globalStyles.container]}>
       <NavHeader headerName="Delivery History"
-        // icon={
-        //   <Pressable style={[globalStyles.iconWrapper, globalStyles.allCenter, { marginRight: 10 }]}>
-        //     <Octicons name="search" size={24} color="black"
-        //     />
-        //   </Pressable>
-        // }
+      // icon={
+      //   <Pressable style={[globalStyles.iconWrapper, globalStyles.allCenter, { marginRight: 10 }]}>
+      //     <Octicons name="search" size={24} color="black"
+      //     />
+      //   </Pressable>
+      // }
       />
       <View style={{ padding: wp(3) }}>
         <View style={[globalStyles.flexRowBtw, styles.tabWrapper]}>
@@ -28,7 +40,10 @@ const History = () => {
               <Pressable
                 key={item}
                 style={[globalStyles.allCenter, styles.tabBtn, { backgroundColor: activeTab === item ? colors.app_color : 'transparent' }]}
-                onPress={() => setActiveTab(item)}
+                onPress={() => {
+                  setActiveTab(item)
+                  handleFilter(item as orderStatus)
+                }}
               >
                 <Text style={[styles.tabText, { color: activeTab === item ? colors.white : colors.dark_1 }]}>{item}</Text>
               </Pressable>
@@ -36,7 +51,7 @@ const History = () => {
           }
         </View>
         <FlatList
-          data={orders as orderProps[]}
+          data={ordersList as orderProps[]}
           keyExtractor={(_item, index) => index.toString()}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ gap: 15, paddingBottom: 20 }}

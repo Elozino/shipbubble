@@ -1,14 +1,27 @@
 import { Picker } from '@react-native-picker/picker'
-import React, { useState } from 'react'
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native'
+import React, { useCallback, useMemo, useRef, useState } from 'react'
+import { Image, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import NavHeader from '../../components/NavHeader'
 import AppButton from '../../components/ui/AppButton'
 import Input from '../../components/ui/Input'
-import { categories, places } from '../../constants/data'
-import { colors, fontSize, globalStyles } from '../../constants/styles'
+import { categories, courier, places } from '../../constants/data'
+import { colors, fontSize, globalStyles, radius } from '../../constants/styles'
 import { hp, wp } from '../../helpers/dimens'
+import BottomSheet, { BottomSheetBackdrop, BottomSheetBackdropProps, BottomSheetFlatList, BottomSheetModal } from "@gorhom/bottom-sheet";
+import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-native-reanimated'
+import { BlurView } from 'expo-blur';
+import { AntDesign } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { MainNavigatorParams } from '../../types/navigation'
+import { Logistics } from '../../types'
+
+
 
 const Booking = () => {
+  const navigation = useNavigation<StackNavigationProp<MainNavigatorParams>>()
+  const sheetRef = useRef<BottomSheet>(null);
+  const snapPoints = useMemo(() => ["70%"], []);
   const [deliveryForm, setDeliveryForm] = useState({
     sender: '',
     receiver: '',
@@ -46,9 +59,26 @@ const Booking = () => {
       setError(prev => ({ ...prev, pickup: !deliveryForm.pickup }))
       return alert('Please fill all fields')
     } else {
+      handleOpenPress()
       console.log(deliveryForm)
     }
   }
+
+  const data = useMemo(
+    () =>
+      Array(50)
+        .fill(0)
+        .map((_, index) => `index-${index}`),
+    []
+  );
+
+
+  const handleClosePress = useCallback(() => {
+    sheetRef.current?.close();
+  }, []);
+  const handleOpenPress = useCallback(() => {
+    sheetRef.current?.expand();
+  }, []);
 
   return (
     <View style={[globalStyles.container]}>
@@ -150,6 +180,8 @@ const Booking = () => {
                     prompt="Select pickup location"
                     selectionColor={colors.app_color}
                     selectedValue={deliveryForm.pickup}
+                    onFocus={() => setError(prev => ({ ...prev, pickup: false }))}
+                    onBlur={() => setError(prev => ({ ...prev, pickup: !deliveryForm.pickup }))}
                     style={{ flex: 1 }}
                     onValueChange={(itemValue) =>
                       setDeliveryForm(prev => ({ ...prev, pickup: itemValue }))
@@ -159,7 +191,7 @@ const Booking = () => {
                         label={item.label}
                         value={item.value}
                         key={item.value}
-                        enabled={item.value !== "0"}
+                      // enabled={item.value !== "0"}
                       />
                     ))}
                   </Picker>
@@ -176,6 +208,8 @@ const Booking = () => {
                     prompt="Select delivery location"
                     selectionColor={colors.app_color}
                     selectedValue={deliveryForm.delivery}
+                    onFocus={() => setError(prev => ({ ...prev, delivery: false }))}
+                    onBlur={() => setError(prev => ({ ...prev, delivery: !deliveryForm.delivery }))}
                     onValueChange={(itemValue) =>
                       setDeliveryForm(prev => ({ ...prev, delivery: itemValue }))
                     }>
@@ -184,7 +218,7 @@ const Booking = () => {
                         label={item.label}
                         value={item.value}
                         key={item.value}
-                        enabled={item.value !== "0"}
+                      // enabled={item.value !== "0"}
                       />
                     ))}
                   </Picker>
@@ -197,16 +231,128 @@ const Booking = () => {
                 title={"Proceed"}
                 btnStyle={{ ...styles.widthFix }}
                 onPress={handleDeliveryForm}
+              // onPress={handleOpenPress}
               />
             </View>
           </KeyboardAvoidingView>
         </ScrollView>
       </View>
+      <BottomSheet
+        ref={sheetRef}
+        index={-1}
+        snapPoints={snapPoints}
+        enablePanDownToClose={true}
+        backdropComponent={CustomBackDrop1}
+      >
+        <BottomSheetFlatList
+          data={courier as Logistics[]}
+          keyExtractor={(_, i) => i.toString()}
+          renderItem={({ item }: { item: Logistics }) => <LogisticsCard item={item}
+            handleClosePress={handleClosePress}
+          />}
+          contentContainerStyle={styles.contentContainer}
+          ListFooterComponent={<AppButton
+            title="Proceed"
+            onPress={() => {
+              navigation.navigate('Booking')
+              handleClosePress()
+            }}
+            btnStyle={{ marginHorizontal: 'auto', width: wp(90), marginTop: hp(1.2) }}
+          />}
+        />
+      </BottomSheet>
     </View>
   );
 };
 
 export default Booking
+
+const CustomBackDrop = ({
+  animatedIndex,
+  style,
+}: BottomSheetBackdropProps) => {
+  const containerAnimatedStyle = useAnimatedStyle(() => {
+    let opacity = interpolate(
+      animatedIndex.value,
+      [-1, 0],
+      [0, 1],
+      Extrapolation.CLAMP
+    )
+    return {
+      opacity
+    };
+  });
+
+  const containerStyle = [StyleSheet.absoluteFill, style, styles.overlay, containerAnimatedStyle];
+
+  return (
+    <Animated.View style={containerStyle}>
+      <BlurView
+        style={StyleSheet.absoluteFill}
+        tint="dark"
+        intensity={15}
+        experimentalBlurMethod={"dimezisBlurView"}
+      />
+    </Animated.View>
+  );
+}
+
+const CustomBackDrop1 = (props: BottomSheetBackdropProps) => {
+  return (
+    <BottomSheetBackdrop
+      {...props}
+      pressBehavior="none"
+      disappearsOnIndex={-1}
+      appearsOnIndex={0}
+      enableTouchThrough={false}
+      opacity={0.4}
+    />
+  );
+};
+
+const LogisticsCard = ({ item, handleClosePress }: { item: Logistics, handleClosePress: () => void }) => {
+  const navigation = useNavigation<StackNavigationProp<MainNavigatorParams>>()
+  const rating = item?.tracking?.bars
+  return (
+    <Pressable
+      onPress={() => {
+        navigation.navigate('BookingDetails')
+        handleClosePress()
+      }}
+      style={styles.itemContainer}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(3) }}>
+        <Image
+          source={{ uri: item?.courier_image }}
+          resizeMode='cover'
+          style={styles.images}
+        />
+        <View>
+          <Text style={styles.courierName}>{item?.courier_name}</Text>
+          <Text style={styles.courierType}>{item?.service_type}</Text>
+        </View>
+      </View>
+      <View>
+        <Text style={[styles.trackingText, {color: colors.app_color}]}>{item?.currency} {item?.total}</Text>
+        <Text style={styles.trackingText}>Tracking</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(1) }}>
+          {Array(5).fill(rating).map((_, i) => {
+            const isFilled = ++i > Math.ceil(rating);
+            const color = isFilled ? colors.dark_1 : colors.app_color;
+            return (
+              <AntDesign
+                name="star"
+                size={10}
+                key={i}
+                color={color}
+              />
+            );
+          })}
+        </View>
+      </View>
+    </Pressable>
+  )
+}
+
 
 const styles = StyleSheet.create({
   widthFix: {
@@ -221,4 +367,42 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     fontSize: fontSize.md,
   },
+  contentContainer: {
+    backgroundColor: "white",
+    padding: 15,
+    gap: hp(2),
+  },
+  images: {
+    width: wp(12),
+    height: wp(12),
+    borderRadius: radius.lg
+  },
+  itemContainer: {
+    padding: 10,
+    backgroundColor: colors.white,
+    elevation: 2,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  overlay: {
+    backgroundColor: 'rgba(0,0,0,0.5)'
+  },
+  courierName: {
+    fontSize: fontSize.sm,
+    fontWeight: '500',
+    color: colors.dark_1,
+  },
+  courierType: {
+    fontSize: fontSize.xs,
+    fontWeight: '400',
+    textTransform: 'capitalize',
+    color: colors.dark_1,
+  },
+  trackingText: {
+    fontSize: fontSize.xs,
+    color: colors.dark_1,
+    marginBottom: 5,
+    fontWeight: '500',
+  }
 })

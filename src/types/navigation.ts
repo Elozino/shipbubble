@@ -5,4 +5,5 @@ export type MainNavigatorParams = {
   Home: undefined;
   Booking: undefined;
   History: undefined;
+  BookingDetails: undefined;
 };
