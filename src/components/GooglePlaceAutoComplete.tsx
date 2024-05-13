@@ -12,7 +12,7 @@ const GooglePlaceAutoComplete = () => {
     //     console.log(data, details);
     //   }}
     // query={{
-    //   key: 'AIzaSyBkCR5IEtMroysL_Au6qKqOaWXPOzGbMgE',
+    //   key: '',
     //   language: 'en',
     // components: 'country:us',
 
