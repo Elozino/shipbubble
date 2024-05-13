@@ -8,7 +8,7 @@ git clone https://github.com/Elozino/shipbubble.git
 ```
 2. Change directory to app directory
 ```
-cd skillbubble
+cd shipbubble
 ```
 3. Install dependencies
 ```
