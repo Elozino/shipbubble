@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, TextInput, TextInputProps, View, ViewStyle } from 'react-native'
+import { StyleSheet, Text, TextInput, TextInputProps, TextStyle, View, ViewStyle } from 'react-native'
 import { colors, fontSize, radius } from '../../constants/styles';
 import { hp, wp } from '../../helpers/dimens';
 
@@ -16,21 +16,23 @@ const Input = ({ children, style }: {
 
 Input.displayName = 'Input'
 
-Input.Text = function ({ label }: {
-  label: string
+Input.Text = function ({ label, style }: {
+  label: string;
+  style?: TextStyle;
 }) {
   return (
-    <Text style={[styles.text]}>{label}</Text>
+    <Text style={[styles.text, style]}>{label}</Text>
   )
 }
 Input.displayName = 'Text'
 
-Input.Field = function (props: React.JSX.IntrinsicAttributes & React.JSX.IntrinsicClassAttributes<TextInput> & Readonly<TextInputProps>) {
+Input.Field = function (props: TextInputProps) {
   return (
     <TextInput
-      style={styles.inputField}
+      style={[styles.inputField]}
       placeholderTextColor={colors.dark_1}
-    // {...props}
+      cursorColor={colors.app_color}
+      {...props}
     />
   )
 }

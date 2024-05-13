@@ -1,5 +1,5 @@
-import React from 'react'
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useState } from 'react'
+import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import AppButton from '../../components/ui/AppButton'
 import Input from '../../components/ui/Input'
 import { images } from '../../constants/images'
@@ -7,8 +7,40 @@ import { colors, fontSize, globalStyles } from '../../constants/styles'
 import { useAppContext } from '../../context/AppContext'
 import { hp, wp } from '../../helpers/dimens'
 
+
 const LoginScreen = () => {
-  const { setIsLoggedIn, isLoggedIn } = useAppContext()
+  const { setIsLoggedIn, isLoggedIn, setUserCredentials } = useAppContext()
+  const [loginForm, setLoginForm] = useState({
+    username: '',
+    password: ''
+  })
+  const [error, setError] = useState({
+    username: false,
+    password: false,
+  })
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleSubmit = () => {
+    if (!loginForm.username || !loginForm.password) {
+      setError(prev => ({ ...prev, username: !loginForm.username }))
+      setError(prev => ({ ...prev, password: !loginForm.password }))
+    } else if (loginForm.username !== 'Elozino' || loginForm.password !== 'skillbubble') {
+      setError(prev => ({ ...prev, username: loginForm.username !== 'Elozino' }))
+      setError(prev => ({ ...prev, password: loginForm.password !== 'skillbubble' }))
+    } else {
+      setIsLoading(true);
+      setTimeout(() => {
+        setUserCredentials(prev => ({ ...prev, ...loginForm }))
+        setIsLoading(false);
+        setIsLoggedIn(!isLoggedIn)
+      }, 2000);
+    }
+  };
+
+
+  const handleForgotPassword = () => {
+    Alert.alert('Check your credential below', 'Well we got you covered... Your username: Elozino, Your password: skillbubble;')
+  }
   return (
     <View style={[globalStyles.container, globalStyles.allCenter]}>
       <Image
@@ -21,25 +53,37 @@ const LoginScreen = () => {
         <Input>
           <Input.Text label="Username" />
           <Input.Field
-            placeholder='Ok'
+            value={loginForm.username}
+            onChangeText={(e: string) => setLoginForm(prev => ({ ...prev, username: e.trim() }))}
+            onFocus={() => { setError(prev => ({ ...prev, username: false })) }}
+            onBlur={() => { setError(prev => ({ ...prev, username: !loginForm.username })) }}
           />
+          {error.username && (
+            <Input.Text label="Incorrect username" style={globalStyles.errorText} />
+          )}
         </Input>
         <Input>
           <Input.Text label="Password" />
           <Input.Field
-            placeholder='Ok'
+            value={loginForm.password}
+            secureTextEntry={true}
+            onChangeText={(e: string) => setLoginForm(prev => ({ ...prev, password: e.trim() }))}
+            onFocus={() => { setError(prev => ({ ...prev, password: false })) }}
+            onBlur={() => { setError(prev => ({ ...prev, password: !loginForm.password })) }}
           />
+          {error.password && (
+            <Input.Text label="Incorrect password" style={globalStyles.errorText} />
+          )}
         </Input>
-        <TouchableOpacity style={{ alignItems: 'flex-end' }}>
+        <TouchableOpacity style={{ alignItems: 'flex-end' }} onPress={handleForgotPassword}>
           <Text style={{ color: colors.app_color }}>Forgot Password?</Text>
         </TouchableOpacity>
       </View>
       <AppButton
         title="Login"
-        onPress={() => {
-          console.log('first')
-          setIsLoggedIn(!isLoggedIn)
-        }}
+        onPress={handleSubmit}
+        loading={isLoading}
+        disabled={isLoading}
       />
     </View>
   )
@@ -54,5 +98,5 @@ const styles = StyleSheet.create({
   },
   text: {
     color: colors.dark_1, fontSize: fontSize.lg, marginBottom: 50, marginTop: 10, fontWeight: '500'
-  }
+  },
 })

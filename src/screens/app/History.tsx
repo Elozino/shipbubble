@@ -1,26 +1,25 @@
-import { FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import { colors, fontSize, globalStyles, radius } from '../../constants/styles';
-import NavHeader from '../../components/NavHeader'
-import { hp, wp } from '../../helpers/dimens'
-import Card from '../../components/ui/Card'
-import { images } from '../../constants/images'
-import { FontAwesome } from '@expo/vector-icons'
 import { Octicons } from '@expo/vector-icons';
-import { tabList } from '../../constants/data'
-
+import React, { useState } from 'react';
+import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import HistoryCard from '../../components/HistoryCard';
+import NavHeader from '../../components/NavHeader';
+import { orders, tabList } from '../../constants/data';
+import { colors, fontSize, globalStyles, radius } from '../../constants/styles';
+import { hp, wp } from '../../helpers/dimens';
+import { HistoryCardProps, orderProps } from '../../types';
 
 
 const History = () => {
+  const [activeTab, setActiveTab] = useState('All')
   return (
     <View style={[globalStyles.container]}>
       <NavHeader headerName="Delivery History"
-        icon={
-          <Pressable style={[globalStyles.iconWrapper, globalStyles.allCenter, { marginRight: 10 }]}>
-            <Octicons name="search" size={24} color="black"
-            />
-          </Pressable>
-        }
+        // icon={
+        //   <Pressable style={[globalStyles.iconWrapper, globalStyles.allCenter, { marginRight: 10 }]}>
+        //     <Octicons name="search" size={24} color="black"
+        //     />
+        //   </Pressable>
+        // }
       />
       <View style={{ padding: wp(3) }}>
         <View style={[globalStyles.flexRowBtw, styles.tabWrapper]}>
@@ -28,39 +27,24 @@ const History = () => {
             tabList.map(item => (
               <Pressable
                 key={item}
-                style={[globalStyles.allCenter, styles.tabBtn]}>
-                <Text style={styles.tabText}>{item}</Text>
+                style={[globalStyles.allCenter, styles.tabBtn, { backgroundColor: activeTab === item ? colors.app_color : 'transparent' }]}
+                onPress={() => setActiveTab(item)}
+              >
+                <Text style={[styles.tabText, { color: activeTab === item ? colors.white : colors.dark_1 }]}>{item}</Text>
               </Pressable>
             ))
           }
         </View>
         <FlatList
-          data={Array(50)}
-          keyExtractor={item => item}
+          data={orders as orderProps[]}
+          keyExtractor={(_item, index) => index.toString()}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ gap: 15, paddingBottom: 20 }}
           initialNumToRender={50}
           maxToRenderPerBatch={100}
-          renderItem={({ item }) =>
-            <Card>
-              <View style={[globalStyles.flexRowBtw, { gap: wp(2) }]}>
-                <Card.Icon>
-                  <Image
-                    source={images["m-logo"]}
-                    resizeMode="cover"
-                    style={styles.icon}
-                  />
-                </Card.Icon>
-                <View>
-                  <Card.Text text="Delivery Number" style={styles.mainText} />
-                  <Card.Text text="Yaba -> Ikeja" style={styles.subText} />
-                </View>
-              </View>
-              <Card.Icon>
-                <FontAwesome name="angle-right" size={24} color={colors.neutral(0.8)} />
-              </Card.Icon>
-            </Card>
-          }
+          renderItem={({ item }: HistoryCardProps) =>
+            <HistoryCard item={item}
+            />}
         />
       </View>
     </View>
@@ -79,7 +63,6 @@ const styles = StyleSheet.create({
   subText: { fontSize: fontSize.xs, color: colors.dark_1 },
   tabBtn: {
     width: '33%',
-    backgroundColor: colors.app_color,
     height: 40,
     borderRadius: radius.curve,
   },

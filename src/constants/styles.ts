@@ -9,6 +9,9 @@ export const colors = {
   app_color: "#FF6C78",
   gray_1: "#80808087",
   neutral: (opacity: number) => `rgba(10, 10, 10, ${opacity})`,
+  yellow_1: "#FCE490",
+  green_1: "#8AE388",
+  red_1: '#FF0000'
 };
 
 export const radius = {
@@ -63,4 +66,9 @@ export const globalStyles = {
     justifyContent: "center",
     alignItems: "center",
   } as ViewStyle,
+  errorText: {
+    color: colors.red_1,
+    marginTop: 5,
+    fontSize: fontSize.xs,
+  }
 };
