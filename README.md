@@ -26,7 +26,7 @@ npx expo start
 - Username: Elozino
 - Password: shipbubble
 
-APP LINK: [https://expo.dev/accounts/elozino/projects/shipbubble/builds/d468fa6e-5268-4dd7-a7c3-d7ce121804e9](https://expo.dev/accounts/elozino/projects/shipbubble/builds/d468fa6e-5268-4dd7-a7c3-d7ce121804e9)
+### NB: Check the root file for the apk, name is shipbubble-test.apk
 
 
 #### Screenshots
