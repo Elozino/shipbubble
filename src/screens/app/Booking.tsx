@@ -60,22 +60,13 @@ const Booking = () => {
       return alert('Please fill all fields')
     } else {
       handleOpenPress()
-      console.log(deliveryForm)
     }
   }
-
-  const data = useMemo(
-    () =>
-      Array(50)
-        .fill(0)
-        .map((_, index) => `index-${index}`),
-    []
-  );
-
 
   const handleClosePress = useCallback(() => {
     sheetRef.current?.close();
   }, []);
+
   const handleOpenPress = useCallback(() => {
     sheetRef.current?.expand();
   }, []);
@@ -247,9 +238,12 @@ const Booking = () => {
         <BottomSheetFlatList
           data={courier as Logistics[]}
           keyExtractor={(_, i) => i.toString()}
-          renderItem={({ item }: { item: Logistics }) => <LogisticsCard item={item}
-            handleClosePress={handleClosePress}
-          />}
+          renderItem={({ item }: { item: Logistics }) =>
+            <LogisticsCard
+              item={item}
+              deliveryForm={deliveryForm}
+              handleClosePress={handleClosePress}
+            />}
           contentContainerStyle={styles.contentContainer}
           ListFooterComponent={<AppButton
             title="Proceed"
@@ -310,13 +304,20 @@ const CustomBackDrop1 = (props: BottomSheetBackdropProps) => {
   );
 };
 
-const LogisticsCard = ({ item, handleClosePress }: { item: Logistics, handleClosePress: () => void }) => {
+const LogisticsCard = ({ item, handleClosePress, deliveryForm }: {
+  item: Logistics;
+  handleClosePress: () => void;
+  deliveryForm: Record<string, string>;
+}) => {
   const navigation = useNavigation<StackNavigationProp<MainNavigatorParams>>()
   const rating = item?.tracking?.bars
   return (
     <Pressable
       onPress={() => {
-        navigation.navigate('BookingDetails')
+        navigation.navigate('BookingDetails', {
+          logistics: item,
+          orderInfo: deliveryForm,
+        })
         handleClosePress()
       }}
       style={styles.itemContainer}>
@@ -332,7 +333,7 @@ const LogisticsCard = ({ item, handleClosePress }: { item: Logistics, handleClos
         </View>
       </View>
       <View>
-        <Text style={[styles.trackingText, {color: colors.app_color}]}>{item?.currency} {item?.total}</Text>
+        <Text style={[styles.trackingText, { color: colors.app_color }]}>{item?.currency} {item?.total}</Text>
         <Text style={styles.trackingText}>Tracking</Text>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(1) }}>
           {Array(5).fill(rating).map((_, i) => {

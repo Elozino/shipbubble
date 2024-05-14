@@ -55,6 +55,11 @@ export const globalStyles = {
     alignItems: "center",
     justifyContent: "space-between",
   } as ViewStyle,
+  flexBtw: {
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 20
+  } as ViewStyle,
   title: {
     color: colors.dark_1,
     fontSize: fontSize.xl,
