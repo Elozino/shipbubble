@@ -1,4 +1,5 @@
-import React, { createContext, ReactNode, useContext, useState } from 'react';
+import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { _getItem } from '../helpers/async-storage';
 import { AppContextType } from '../types';
 
 
@@ -20,6 +21,17 @@ const AppContext = ({ children }: { children: ReactNode }) => {
     username: '',
     password: ''
   })
+
+  useEffect(() => {
+    (async () => {
+      const credential = await _getItem('auth')
+      if (credential) {
+        setUserCredentials(prev => ({ ...prev, ...credential }))
+        setIsLoggedIn(!isLoggedIn)
+        return;
+      }
+    })()
+  }, [])
 
   return (
     <Context.Provider value={{ isLoggedIn, setIsLoggedIn, userCredentials, setUserCredentials }}>

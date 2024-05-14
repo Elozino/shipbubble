@@ -6,6 +6,7 @@ import { images } from '../../constants/images'
 import { colors, fontSize, globalStyles } from '../../constants/styles'
 import { useAppContext } from '../../context/AppContext'
 import { hp, wp } from '../../helpers/dimens'
+import { _setItem } from '../../helpers/async-storage'
 
 
 const LoginScreen = () => {
@@ -30,7 +31,8 @@ const LoginScreen = () => {
       setError(prev => ({ ...prev, password: loginForm.password !== 'skillbubble' }))
     } else {
       setIsLoading(true);
-      setTimeout(() => {
+      setTimeout(async () => {
+        await _setItem('auth', loginForm)
         setUserCredentials(prev => ({ ...prev, ...loginForm }))
         setIsLoading(false);
         setIsLoggedIn(!isLoggedIn)
