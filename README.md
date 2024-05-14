@@ -26,9 +26,11 @@ npx expo start
 - Username: Elozino
 - Password: shipbubble
 
+APP LINK: [https://expo.dev/accounts/elozino/projects/shipbubble/builds/d468fa6e-5268-4dd7-a7c3-d7ce121804e9](https://expo.dev/accounts/elozino/projects/shipbubble/builds/d468fa6e-5268-4dd7-a7c3-d7ce121804e9)
+
 
 #### Screenshots
-![Login](/loin.jpeg)
+![Login](/login.jpeg)
 ![Home](/home.jpeg)
 ![Home2](/home2.jpeg)
 ![Book Delivery](/book-deliver.jpeg)
