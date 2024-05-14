@@ -1,30 +1,35 @@
-import { Modal, StyleSheet, Text, View } from 'react-native'
-import React, { useState } from 'react'
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
-import { colors, fontSize, globalStyles, radius } from '../../constants/styles'
-import NavHeader from '../../components/NavHeader'
-import { Logistics } from '../../types/index';
-import { BookingDetailsProps, MainNavigatorParams } from '../../types/navigation'
-import { truncateText } from '../../helpers'
-import AppButton from '../../components/ui/AppButton'
 import { FontAwesome5 } from '@expo/vector-icons'
-import { BlurView } from 'expo-blur'
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
+import React, { useState } from 'react'
+import { Modal, StyleSheet, Text, View } from 'react-native'
+import NavHeader from '../../components/NavHeader'
+import AppButton from '../../components/ui/AppButton'
+import { colors, fontSize, globalStyles } from '../../constants/styles'
+import { useAppContext } from '../../context/AppContext'
+import { truncateText } from '../../helpers'
+import { _addObjectToArray } from '../../helpers/async-storage'
+import { orderListProp } from '../../types/index'
+import { BookingDetailsProps, MainNavigatorParams } from '../../types/navigation'
 
 const BookingDetails = () => {
   const { params } = useRoute<RouteProp<MainNavigatorParams>>()
   const { orderInfo, logistics } = params as BookingDetailsProps;
   const [isLoading, setIsLoading] = useState(false)
   const [isModalVisible, setIsModalVisible] = useState(false)
+  const { setOrdersList } = useAppContext();
 
-  const handleSubmit = () => {
+
+  const handleSubmit = async () => {
     setIsLoading(true);
-    setTimeout(() => {
+    setTimeout(async () => {
+      const order = { orderInfo, logistics, status: Math.random() < 0.5 ? 'completed' : 'ongoing' } as orderListProp
+      setOrdersList(prev => ([...prev, order]))
+      await _addObjectToArray('orders', order)
       setIsLoading(false);
       setIsModalVisible(true)
     }, 2000);
   }
-
 
   const closeModal = () => {
     setIsModalVisible(false)
@@ -132,7 +137,7 @@ const SuccessModal = ({
     >
       <View style={[globalStyles.allCenter, globalStyles.container, { gap: 30 }]}>
         <FontAwesome5 name="check-circle" size={100} color={colors.app_color} />
-        <Text style={[styles.textHeader]}>Order has been laced</Text>
+        <Text style={[styles.textHeader]}>Order has been placed</Text>
         <AppButton
           title="Go Home"
           onPress={() => {

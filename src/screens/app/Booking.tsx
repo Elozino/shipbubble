@@ -14,7 +14,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { MainNavigatorParams } from '../../types/navigation'
-import { Logistics } from '../../types'
+import { Logistics, oderInfoProp } from '../../types'
 
 
 
@@ -180,7 +180,7 @@ const Booking = () => {
                     {places.map(item => (
                       <Picker.Item
                         label={item.label}
-                        value={item.value}
+                        value={item.label}
                         key={item.value}
                       // enabled={item.value !== "0"}
                       />
@@ -207,7 +207,7 @@ const Booking = () => {
                     {places.map(item => (
                       <Picker.Item
                         label={item.label}
-                        value={item.value}
+                        value={item.label}
                         key={item.value}
                       // enabled={item.value !== "0"}
                       />
@@ -307,7 +307,7 @@ const CustomBackDrop1 = (props: BottomSheetBackdropProps) => {
 const LogisticsCard = ({ item, handleClosePress, deliveryForm }: {
   item: Logistics;
   handleClosePress: () => void;
-  deliveryForm: Record<string, string>;
+  deliveryForm: oderInfoProp;
 }) => {
   const navigation = useNavigation<StackNavigationProp<MainNavigatorParams>>()
   const rating = item?.tracking?.bars

@@ -1,4 +1,4 @@
-import { Logistics } from ".";
+import { Logistics, oderInfoProp, orderListProp } from ".";
 
 export type AuthNavigatorParams = {
   Login: undefined;
@@ -8,9 +8,10 @@ export type MainNavigatorParams = {
   Booking: undefined;
   History: undefined;
   BookingDetails: BookingDetailsProps;
+  HistoryDetails: { item: orderListProp };
 };
 
 export type BookingDetailsProps = {
   logistics: Logistics;
-  orderInfo: Record<string, string>;
+  orderInfo: oderInfoProp;
 };

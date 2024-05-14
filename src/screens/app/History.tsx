@@ -1,28 +1,32 @@
-import { Octicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback, useState } from 'react';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import HistoryCard from '../../components/HistoryCard';
 import NavHeader from '../../components/NavHeader';
-import { orders, tabList } from '../../constants/data';
+import { tabList } from '../../constants/data';
 import { colors, fontSize, globalStyles, radius } from '../../constants/styles';
+import { useAppContext } from '../../context/AppContext';
 import { hp, wp } from '../../helpers/dimens';
-import { HistoryCardProps, orderProps, orderStatus } from '../../types';
+import { orderListProp, orderStatus } from '../../types';
+import { MainNavigatorParams } from '../../types/navigation';
 
 
 const History = () => {
+  const navigation = useNavigation<StackNavigationProp<MainNavigatorParams>>()
   const [activeTab, setActiveTab] = useState('All')
-  const [ordersList, setOrdersList] = useState(orders)
+  const { ordersList: allOrders } = useAppContext();
+  const [ordersList, setOrdersList] = useState<orderListProp[]>(allOrders)
 
   const handleFilter = useCallback((status: orderStatus) => {
     if (status.toLowerCase() === 'All'.toLowerCase()) {
-      setOrdersList(orders);
+      setOrdersList(allOrders);
     } else {
-      const filters = orders.filter(
-        (item) => item?.status === status.toString().toLowerCase()
-      );
-      setOrdersList(filters);
+      const filter = ordersList.filter((item: orderListProp) => item?.status.toLowerCase() !== status.toLowerCase());
+      setOrdersList(filter);
     }
   }, []);
+
   return (
     <View style={[globalStyles.container]}>
       <NavHeader headerName="Delivery History"
@@ -51,14 +55,15 @@ const History = () => {
           }
         </View>
         <FlatList
-          data={ordersList as orderProps[]}
+          data={ordersList as orderListProp[]}
           keyExtractor={(_item, index) => index.toString()}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ gap: 15, paddingBottom: 20 }}
           initialNumToRender={50}
           maxToRenderPerBatch={100}
-          renderItem={({ item }: HistoryCardProps) =>
+          renderItem={({ item }: { item: orderListProp }) =>
             <HistoryCard item={item}
+              navigation={navigation}
             />}
         />
       </View>

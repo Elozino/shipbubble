@@ -5,6 +5,7 @@ import Home from '../screens/app/Home';
 import { MainNavigatorParams } from '../types/navigation';
 import History from '../screens/app/History';
 import BookingDetails from '../screens/app/BookingDetails';
+import HistoryDetails from '../screens/app/HistoryDetails';
 
 const Stack = createStackNavigator<MainNavigatorParams>();
 
@@ -28,6 +29,10 @@ const MainNavigator = () => {
       <Stack.Screen
         name='History'
         component={History}
+      />
+      <Stack.Screen
+        name='HistoryDetails'
+        component={HistoryDetails}
       />
     </Stack.Navigator>
   )

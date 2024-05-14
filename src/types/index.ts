@@ -8,12 +8,30 @@ export interface AppContextType {
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
   setUserCredentials: React.Dispatch<React.SetStateAction<IUserCredential>>;
   userCredentials: IUserCredential;
+  ordersList: [];
+  setOrdersList: React.Dispatch<React.SetStateAction<orderListProp[]>>;
 }
 
 export type orderStatus = "all" | "completed" | "ongoing";
 
 export type HistoryCardProps = {
   item: orderProps;
+};
+
+export type orderListProp = {
+  logistics: Logistics;
+  orderInfo: oderInfoProp;
+  status: orderStatus;
+};
+
+export type oderInfoProp = {
+  sender: string;
+  receiver: string;
+  parcel: string;
+  category: string;
+  item_details: string;
+  pickup: string;
+  delivery: string;
 };
 
 export type orderProps = {

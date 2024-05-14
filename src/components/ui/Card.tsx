@@ -1,16 +1,18 @@
 import React, { ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native';
 import { colors, fontSize, globalStyles, radius } from '../../constants/styles';
-import { hp, wp } from '../../helpers/dimens';
+import { wp } from '../../helpers/dimens';
 
 const Card = ({
   children,
   style,
+  onPress,
 }: {
   children: ReactNode;
   style?: ViewStyle;
+  onPress: () => void;
 }) => {
-  return <Pressable style={[styles.card, style]}>{children}</Pressable>;
+  return <Pressable style={[styles.card, style]} onPress={onPress}>{children}</Pressable>;
 };
 
 Card.displayName = 'Card';

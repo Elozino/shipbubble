@@ -1,20 +1,21 @@
-import { Alert, FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
-import React, { useEffect, useMemo } from 'react'
-import AppButton from '../../components/ui/AppButton'
+import { MaterialIcons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import { MainNavigatorParams } from '../../types/navigation'
+import React from 'react'
+import { Alert, FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
+import Empty from '../../components/Empty'
 import HistoryCard from '../../components/HistoryCard'
+import AppButton from '../../components/ui/AppButton'
 import { colors, globalStyles, radius } from '../../constants/styles'
-import { hp, wp } from '../../helpers/dimens'
-import { MaterialIcons } from '@expo/vector-icons';
 import { useAppContext } from '../../context/AppContext'
-import { orders } from '../../constants/data'
-import { HistoryCardProps, orderProps } from '../../types'
+import { _removeItem } from '../../helpers/async-storage'
+import { hp } from '../../helpers/dimens'
+import { orderListProp } from '../../types'
+import { MainNavigatorParams } from '../../types/navigation'
 
 const Home = () => {
   const navigation = useNavigation<StackNavigationProp<MainNavigatorParams>>();
-  const { setIsLoggedIn, isLoggedIn, userCredentials } = useAppContext();
+  const { setIsLoggedIn, isLoggedIn, userCredentials, ordersList } = useAppContext();
 
   const handleLogout = () => {
     Alert.alert("Logout", "Are you sure you want to logout?", [
@@ -23,12 +24,17 @@ const Home = () => {
         onPress: () => console.log("Cancel Pressed"),
         style: "cancel",
       },
-      { text: "Logout", onPress: () => setIsLoggedIn(!isLoggedIn) },
+      {
+        text: "Logout", onPress: async () => {
+          await _removeItem('auth')
+          setIsLoggedIn(!isLoggedIn)
+        }
+      },
     ]);
   };
 
-  const ongoingOrders = orders.filter((item) => item.status !== "completed");
-  const completedOrders = orders.filter((item) => item.status === "completed");
+  const ongoingOrders = ordersList.filter((item: orderListProp) => item?.status !== "completed");
+  const completedOrders = ordersList.filter((item: orderListProp) => item?.status === "completed");
 
   return (
     <View style={globalStyles.container}>
@@ -47,7 +53,7 @@ const Home = () => {
         </Text>
       </View>
       <View style={styles.statWrapper}>
-        <StatCard total={orders?.length ?? 0} type={"Total"} />
+        <StatCard total={ordersList?.length ?? 0} type={"Total"} />
         <StatCard total={ongoingOrders?.length ?? 0} type={"Ongoing"} />
         <StatCard total={completedOrders?.length ?? 0} type={"Completed"} />
       </View>
@@ -57,15 +63,19 @@ const Home = () => {
         />
       </View>
       <FlatList
-        data={orders.slice(0, 5) as orderProps[]}
+        style={{ flex: 1 }}
+        data={ordersList.slice(0, 5) as orderListProp[]}
         keyExtractor={(_, index) => index.toString()}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ gap: 15, padding: 20, paddingTop: 0 }}
+        contentContainerStyle={{ gap: 15, padding: 20, paddingTop: 0, flexGrow: 1 }}
         initialNumToRender={50}
         maxToRenderPerBatch={100}
-        renderItem={({ item }: HistoryCardProps) => <HistoryCard item={item} />}
+        renderItem={({ item }: { item: orderListProp }) => <HistoryCard item={item} navigation={navigation} />}
         ListHeaderComponent={<ListHeader navigation={navigation} />}
-        ListFooterComponent={
+        ListEmptyComponent={
+          <Empty />
+        }
+        ListFooterComponent={() => ordersList.length < 1 ? null :
           <AppButton
             title="See More"
             onPress={() => navigation.navigate("History")}
