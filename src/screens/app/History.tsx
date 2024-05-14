@@ -23,7 +23,7 @@ const History = () => {
     if (status.toLowerCase() === 'All'.toLowerCase()) {
       setOrdersList(allOrders);
     } else {
-      const filter = ordersList.filter((item: orderListProp) => item?.status.toLowerCase() !== status.toLowerCase());
+      const filter = ordersList.filter((item: orderListProp) => item?.status.toLowerCase() === status.toLowerCase());
       setOrdersList(filter);
     }
   }, []);
