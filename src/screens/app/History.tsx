@@ -10,6 +10,7 @@ import { useAppContext } from '../../context/AppContext';
 import { hp, wp } from '../../helpers/dimens';
 import { orderListProp, orderStatus } from '../../types';
 import { MainNavigatorParams } from '../../types/navigation';
+import Empty from '../../components/Empty';
 
 
 const History = () => {
@@ -58,13 +59,16 @@ const History = () => {
           data={ordersList as orderListProp[]}
           keyExtractor={(_item, index) => index.toString()}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ gap: 15, paddingBottom: 20 }}
+          contentContainerStyle={{ gap: 15, paddingBottom: 20, flexGrow: 1 }}
           initialNumToRender={50}
           maxToRenderPerBatch={100}
           renderItem={({ item }: { item: orderListProp }) =>
             <HistoryCard item={item}
               navigation={navigation}
             />}
+          ListEmptyComponent={
+            <Empty />
+          }
         />
       </View>
     </View>
