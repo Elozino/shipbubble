@@ -26,9 +26,9 @@ const LoginScreen = () => {
     if (!loginForm.username || !loginForm.password) {
       setError(prev => ({ ...prev, username: !loginForm.username }))
       setError(prev => ({ ...prev, password: !loginForm.password }))
-    } else if (loginForm.username !== 'Elozino' || loginForm.password !== 'skillbubble') {
+    } else if (loginForm.username !== 'Elozino' || loginForm.password !== 'shipbubble') {
       setError(prev => ({ ...prev, username: loginForm.username !== 'Elozino' }))
-      setError(prev => ({ ...prev, password: loginForm.password !== 'skillbubble' }))
+      setError(prev => ({ ...prev, password: loginForm.password !== 'shipbubble' }))
     } else {
       setIsLoading(true);
       setTimeout(async () => {

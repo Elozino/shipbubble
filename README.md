@@ -22,6 +22,9 @@ npx expo start
 
 ##### PS: Use `npx expo` as your command executor to avoid compatibility issues
 
+#### Login Credential
+- Username: Elozino
+- Password: shipbubble
 
 #### Objectives
 - Build a simple React Native app to manage and display shipping providers.
