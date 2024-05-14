@@ -26,6 +26,22 @@ npx expo start
 - Username: Elozino
 - Password: shipbubble
 
+
+#### Screenshots
+![Login](/loin.jpeg)
+![Home](/home.jpeg)
+![Home2](/home2.jpeg)
+![Book Delivery](/book-deliver.jpeg)
+![Provider](/providers.jpeg)
+![Delivery Summary](/deliver-summary.jpeg)
+![Success](/order-success.jpeg)
+![History-all](/history.jpeg)
+![History-ongoing](/history-completed.jpeg)
+![History-completed](/history-ongoing.jpeg)
+![Logout](/logout.jpeg)
+
+
+
 #### Objectives
 - Build a simple React Native app to manage and display shipping providers.
 - Deploy the app on both iOS and Android platforms.
